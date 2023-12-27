@@ -11,5 +11,8 @@ chatRouter.post("/chat/delete/:id", verifyToken, chatController.deleteChat)
 chatRouter.post("/chat/update/group/name/:id", verifyToken, chatController.updateGroupName)
 chatRouter.post("/chat/add/group/member/:id", verifyToken, chatController.addGroupMember)
 chatRouter.post("/chat/remove/group/member/:id", verifyToken, chatController.removeGroupMember)
+chatRouter.post("/chat/message/:send", verifyToken, chatController.sendMessage)
+chatRouter.get("/chat/messages/:get", verifyToken, chatController.getAllMessages)
+
 
 module.exports = chatRouter
