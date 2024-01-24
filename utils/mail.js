@@ -21,6 +21,12 @@ async function mail(from, to, subject, content) {
             html:content,
 
             
+        }, (error, info)=>{
+            if (error) {
+                console.error('Error sending email:', error);
+              } else {
+                console.log('Email sent:', info.response);
+              }
         });
         console.log("Message sent: %s", info.messageId);
     }

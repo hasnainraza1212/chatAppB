@@ -4,8 +4,6 @@ const sendMessageService = async(req, res)=>{
 try{
 const chatId = req.query.chatId;
 const id = req.user._id
-console.log(chatId)
-console.log(id)
 const {content} = req.body
 const createMessage =await Message.create({
     content, 

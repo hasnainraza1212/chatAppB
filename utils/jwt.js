@@ -3,8 +3,8 @@ const secretKey = process.env.JWTSECRETKEY
 const expiresIn = process.env.JWTEXPIRY
 const User = require("./../model/userModel")
 const jwtConfig = {
-    sign(email){
-        const token = jwt.sign({email},secretKey, {expiresIn})
+    sign(_id){
+        const token = jwt.sign({_id},secretKey, {expiresIn})
         return token
     },
   
@@ -17,7 +17,13 @@ const jwtConfig = {
         try {
           const decoded = jwt.verify(token,secretKey);
 
-          const user = await User.findOne({email:decoded.email})
+          const user = await User.findOne({_id:decoded._id})
+          console.log(user)
+          if (!user){
+            return res.send({
+              message:"Unauthorized invalid token provided"
+            })
+          }
           req.user = user; // Add the decoded payload to the request object
           next();
         } catch (error) {
