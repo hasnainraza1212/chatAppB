@@ -10,8 +10,7 @@ const signUpService = async(req, res)=>{
         // Validate the request body using the signupSchema
         const { error } = signupSchema.validate(req.body);
         if (error) {
-          console.log(error)
-          return res.status(400).json({ message: error.details[0].message });
+            return res.status(400).json({ message: error.details[0].message });
         }
   
         const { name, email, password } = req.body;

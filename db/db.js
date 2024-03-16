@@ -7,7 +7,9 @@ async function connectDb() {
         });
         console.log("Database connected successfully!")
     } catch (error) {
+        console.log("**************************error ha bhai************************")
         console.log(error);
+        console.log("**************************error ha bhai************************")
         process.exit(1);
     }
 }

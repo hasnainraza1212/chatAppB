@@ -8,9 +8,13 @@ const addGroupMemberService = require("../chatServices/addGroupMemberService")
 const removeGroupMemberService = require("../chatServices/removeGroupMemberService")
 const sendMessageService = require("../chatServices/sendMessageService")
 const getAllMessageService = require("./../chatServices/getAllMessageService")
+const getChatService = require("../chatServices/getChatService")
 const chatController = {
 async accessChat(req, res){
 await accessChatService(req, res)
+},
+async getChat(req, res){
+await getChatService(req, res)
 },
 async  userChats(req, res){
   await userChatsService(req, res)

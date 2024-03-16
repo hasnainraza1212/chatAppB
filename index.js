@@ -1,51 +1,62 @@
-const express = require('express')
-const jwt = require("jsonwebtoken")
-var GoogleStrategy = require('passport-google-oauth20').Strategy;
-const app = express()
-const {Server} = require("socket.io")
-const http = require("http").createServer(app)
-require('dotenv').config({path:'./.env'})
-const connectDb = require('./db/db')
-const UserRouter = require('./routes/userRoutes')
-const cors = require('cors')
-const port =  process.env.PORT || 3000 
-const chatRouter = require('./routes/chatRouter')
-const passport = require('passport')
-const User = require('./model/userModel')
-const { default: mongoose } = require('mongoose')
-const io = new  Server(http,  {
+const express = require("express");
+const jwt = require("jsonwebtoken");
+var GoogleStrategy = require("passport-google-oauth20").Strategy;
+const app = express();
+const { Server } = require("socket.io");
+const http = require("http").createServer(app);
+require("dotenv").config({ path: "./.env" });
+const connectDb = require("./db/db");
+const UserRouter = require("./routes/userRoutes");
+const cors = require("cors");
+const port = process.env.PORT || 3000;
+const chatRouter = require("./routes/chatRouter");
+const passport = require("passport");
+const User = require("./model/userModel");
+const { default: mongoose } = require("mongoose");
+const io = new Server(http, {
   cors: {
-    origin: 'http://localhost:5173',
-    methods: ['GET', 'POST'],
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"],
     credentials: true,
-  }, 
-})
-io.on('connection', (socket) => {
-    console.log(`A user connected witth id: ${socket.id}`)
-})
+  },
+});
+io.on("connection", (socket) => {
+  socket.on("join", ({room})=>{
+    socket.join(room)
+  })
+  socket.on("send_message", ({content,room, sender})=>{
+    socket.to(room).emit("message", {content, sender, chat:room})
+  })
+});
 
-connectDb()
-app.use(cors({
-    origin: 'http://localhost:5173',
-    methods: ['GET', 'POST'],
+connectDb();
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"],
     credentials: true,
-  }))
-app.use(express.json())
+  })
+);
+app.use(express.json());
 
-app.use('/api/v1/user',UserRouter);
-app.use('/api/v1',UserRouter);
-app.use('/api/v1/chat',chatRouter);
+app.use("/api/v1/user", UserRouter);
+app.use("/api/v1", UserRouter);
+app.use("/api/v1/chat", chatRouter);
 
 app.use(passport.initialize());
 
-const handleOauth20 = async (data, type, res, next) => {
+const handleOauth20 = async (data, type, req, res, next) => {
   try {
+    if (req.isAuthenticated()) {
+      // If authenticated, log them out
+     
+    }
     const { _id, email } = data;
     let message;
     let severity;
     let token = "";
     const isUserExist = await User.findOne({ _id, email });
-
+   
     if (type === "login") {
       if (!isUserExist) {
         message = "Create account please!";
@@ -65,7 +76,6 @@ const handleOauth20 = async (data, type, res, next) => {
     }
 
     if (isUserExist) {
-      console.log(isUserExist)
       message = "User already exist";
       severity = "error";
       return res.redirect(
@@ -79,7 +89,9 @@ const handleOauth20 = async (data, type, res, next) => {
     });
     message = "SignUp successfully";
     severity = "success";
-    return res.redirect(`http://localhost:5173/?message=${message}&token=${token}&severity=${severity}`);
+    return res.redirect(
+      `http://localhost:5173/?message=${message}&token=${token}&severity=${severity}`
+    );
   } catch (err) {
     next(err);
   }
@@ -122,6 +134,7 @@ app.get(
   "/google/callback",
   passport.authenticate("google", { session: false }),
   (req, res, next) => {
+   
     try {
       const state = Buffer.from(req.query.state, "base64").toString("ascii");
       const { id, displayName, emails } = req.user;
@@ -131,7 +144,7 @@ app.get(
         email: emails[0].value,
         isEmailVerified: emails[0].verified,
       };
-      handleOauth20(data, state, res, next);
+      handleOauth20(data, state, req, res, next);
     } catch (err) {
       next(err);
     }
@@ -142,11 +155,11 @@ app.get(
 app.use((err, req, res, next) => {
   console.error(err);
   const statusCode = err.statusCode || 500;
-  res.status(statusCode).json({ message: err.message || "Internal Server Error" });
+  res
+    .status(statusCode)
+    .json({ message: err.message || "Internal Server Error" });
 });
 
-
-
-http.listen(port,()=>{
-    console.log(`server is running on port ${port}`)
-})
+http.listen(port, () => {
+  console.log(`server is running on port ${port}`);
+});

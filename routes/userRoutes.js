@@ -13,5 +13,8 @@ userRouter.post('/verify-otp', verifyToken,authController.verifyOtp)
 userRouter.put('/update-password',verifyToken,authController.updatePassword)
 userRouter.post('/upload-profile',verifyToken, upload.single('file'),authController.uploadUserProfile)
 userRouter.delete('/delete',verifyToken,authController.deleteUser)
-userRouter.get('/getAllUsers', verifyToken,authController.getUsers)
+userRouter.get('/getAllUsers',authController.getUsers)
+userRouter.post('/search-contacts', authController.searchContacts)
+userRouter.post('/add-contact', verifyToken,authController.addContact)
+
 module.exports = userRouter;

@@ -18,16 +18,17 @@ const jwtConfig = {
           const decoded = jwt.verify(token,secretKey);
 
           const user = await User.findOne({_id:decoded._id})
-          console.log(user)
           if (!user){
             return res.send({
-              message:"Unauthorized invalid token provided"
+              message:"Unauthorized invalid token provided",
+              success:false
             })
           }
           req.user = user; // Add the decoded payload to the request object
           next();
         } catch (error) {
-          return res.status(401).json({ message: 'Invalid token' });
+        console.log(res.success)
+          return res.status(401).json({ message: 'Invalid token' ,  success:false});
         }
       }
 }

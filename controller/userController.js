@@ -12,6 +12,9 @@ const { updatePasswordService } = require("../userServices/updatePasswordService
 const { deleteUserService } = require("../userServices/deleteUserService");
 const getUsersService = require("../userServices/getAllUsersService");
 const getLoggedInUserService = require("../chatServices/getLoggedInUserService");
+const getContactsService = require("../userServices/getContactsService.js");
+const addContactService = require("../userServices/addContactService.js");
+
 // const accountSid = process.env.TWILIO_ACCOUNT_SID;
 // const authToken = process.env.TWILIO_AUTH_TOKEN;
 // const client = require('twilio')(accountSid, authToken);
@@ -69,7 +72,6 @@ const authController = {
       return res.status(400).json({ message: error.details[0].message });
     }
     const { otp, phone, oldHash } = req.body;
-    console.log(getHashVerify(otp + phone, oldHash));
     if (getHashVerify(otp + phone, oldHash)) {
       return res.status(200).json({ message: "Otp varified", success: true });
     }
@@ -88,6 +90,14 @@ const authController = {
   },
   async getUsers(req, res) {
     await getUsersService(req, res)
+  }
+  ,
+  async searchContacts(req, res) {
+    await getContactsService(req, res)
+  }
+  ,
+  async addContact(req, res) {
+    await addContactService(req, res)
   }
 };
 module.exports = authController;

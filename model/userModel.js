@@ -5,7 +5,7 @@ const UserSchema = new mongoose.Schema({
   phone: { type: String },
   password: { type: String, required: false },
   profilePicture: { type: String },
-  isEmailVerified :{type:Boolean, default :false}
+  isEmailVerified :{type:Boolean, default :false},
 },
 {
   timestamps:true
