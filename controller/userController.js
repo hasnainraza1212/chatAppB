@@ -14,6 +14,7 @@ const getUsersService = require("../userServices/getAllUsersService");
 const getLoggedInUserService = require("../chatServices/getLoggedInUserService");
 const getContactsService = require("../userServices/getContactsService.js");
 const addContactService = require("../userServices/addContactService.js");
+const getContactService = require("../userServices/getContactService.js");
 
 // const accountSid = process.env.TWILIO_ACCOUNT_SID;
 // const authToken = process.env.TWILIO_AUTH_TOKEN;
@@ -98,6 +99,10 @@ const authController = {
   ,
   async addContact(req, res) {
     await addContactService(req, res)
+  }
+  ,
+  async getContact(req, res) {
+    await getContactService(req, res)
   }
 };
 module.exports = authController;

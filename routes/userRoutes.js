@@ -16,5 +16,7 @@ userRouter.delete('/delete',verifyToken,authController.deleteUser)
 userRouter.get('/getAllUsers',authController.getUsers)
 userRouter.post('/search-contacts', authController.searchContacts)
 userRouter.post('/add-contact', verifyToken,authController.addContact)
+userRouter.get('/contacts',verifyToken,authController.getContact)
+
 
 module.exports = userRouter;
